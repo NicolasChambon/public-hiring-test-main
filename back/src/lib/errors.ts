@@ -1,6 +1,7 @@
 import { ValidationError } from "class-validator";
 import { NextFunction, Request, Response } from "express";
 import { ValidateError } from "tsoa";
+import { QueryFailedError } from "typeorm";
 
 export const PG_UNIQUE_CONSTRAINT_VIOLATION = "23505";
 
@@ -44,4 +45,11 @@ export function validationErrorHandler(
   }
 
   next(err);
+}
+
+export function isUniqueConstraintViolation(error: unknown): boolean {
+  return (
+    error instanceof QueryFailedError &&
+    error.driverError.code === PG_UNIQUE_CONSTRAINT_VIOLATION
+  );
 }
