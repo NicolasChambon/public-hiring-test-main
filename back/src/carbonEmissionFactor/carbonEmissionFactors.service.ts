@@ -12,8 +12,8 @@ export class CarbonEmissionFactorsService {
   }
 
   async save(
-    carbonEmissionFactor: CreateCarbonEmissionFactorDto[]
-  ): Promise<CarbonEmissionFactor[] | null> {
+    carbonEmissionFactor: CreateCarbonEmissionFactorDto[],
+  ): Promise<CarbonEmissionFactor[]> {
     if (!dataSource.isInitialized) {
       await dataSource.initialize();
     }
