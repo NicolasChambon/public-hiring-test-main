@@ -93,50 +93,67 @@ describe("CarbonEmissionFactorsController", () => {
         });
     });
 
-    describe("PATCH /carbon-emission-factors", () => {
-      it("should upsert carbon emission factors", async () => {
-        const upsertArgs = [
+    it("should return 409 for a duplicate name and unit", async () => {
+      await request(app)
+        .post("/carbon-emission-factors")
+        .send([
           {
-            name: "ham",
-            unit: "kg",
-            emissionCO2eInKgPerUnit: 0.2,
-            source: "Updated source",
+            name: defaultCarbonEmissionFactors[0].name,
+            unit: defaultCarbonEmissionFactors[0].unit,
+            emissionCO2eInKgPerUnit: 12,
+            source: "Test Source",
           },
-          {
-            name: "newFactor",
-            unit: "kg",
-            emissionCO2eInKgPerUnit: 0.5,
-            source: "New source",
-          },
-        ];
+        ])
+        .expect(409)
+        .expect(({ body }) => {
+          expect(body.message).toContain("already exists");
+        });
+    });
+  });
 
-        return request(app)
-          .patch("/carbon-emission-factors")
-          .send(upsertArgs)
-          .expect(200)
-          .expect(({ body }) => {
-            expect(body).toHaveLength(2);
-          });
-      });
+  describe("PATCH /carbon-emission-factors", () => {
+    it("should upsert carbon emission factors", async () => {
+      const upsertArgs = [
+        {
+          name: "ham",
+          unit: "kg",
+          emissionCO2eInKgPerUnit: 0.2,
+          source: "Updated source",
+        },
+        {
+          name: "newFactor",
+          unit: "kg",
+          emissionCO2eInKgPerUnit: 0.5,
+          source: "New source",
+        },
+      ];
 
-      it("should return 422 for invalid upsert data", async () => {
-        const invalidUpsertArgs = [
-          {
-            name: "ham",
-            unit: "kg",
-            emissionCO2eInKgPerUnit: "not a number",
-            source: "Updated source",
-          },
-        ];
+      return request(app)
+        .patch("/carbon-emission-factors")
+        .send(upsertArgs)
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body).toHaveLength(2);
+        });
+    });
 
-        return request(app)
-          .patch("/carbon-emission-factors")
-          .send(invalidUpsertArgs)
-          .expect(422)
-          .expect(({ body }) => {
-            expect(body.message).toContain("Validation failed");
-          });
-      });
+    it("should return 422 for invalid upsert data", async () => {
+      const invalidUpsertArgs = [
+        {
+          name: "ham",
+          unit: "kg",
+          emissionCO2eInKgPerUnit: "not a number",
+          source: "Updated source",
+        },
+      ];
+
+      return request(app)
+        .patch("/carbon-emission-factors")
+        .send(invalidUpsertArgs)
+        .expect(422)
+        .expect(({ body }) => {
+          expect(body.message).toContain("Validation failed");
+        });
     });
   });
 });

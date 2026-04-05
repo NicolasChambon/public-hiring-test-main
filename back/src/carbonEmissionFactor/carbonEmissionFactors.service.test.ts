@@ -24,20 +24,39 @@ beforeEach(async () => {
 });
 
 describe("CarbonEmissionFactors.service", () => {
-  it("should save new emissionFactors", async () => {
-    await carbonEmissionFactorService.save([
-      hamEmissionFactor,
-      flourEmissionFactor,
-    ]);
-    const retrieveChickenEmissionFactor = await dataSource
-      .getRepository(CarbonEmissionFactor)
-      .findOne({ where: { name: "flour" } });
-    expect(retrieveChickenEmissionFactor?.name).toBe("flour");
-  });
-
   it("should retrieve emission Factors", async () => {
     const carbonEmissionFactors = await carbonEmissionFactorService.findAll();
     expect(carbonEmissionFactors).toHaveLength(1);
+  });
+
+  describe("save", () => {
+    it("should save new emissionFactors", async () => {
+      await carbonEmissionFactorService.save([
+        hamEmissionFactor,
+        flourEmissionFactor,
+      ]);
+      const retrieveChickenEmissionFactor = await dataSource
+        .getRepository(CarbonEmissionFactor)
+        .findOne({ where: { name: "flour" } });
+      expect(retrieveChickenEmissionFactor?.name).toBe("flour");
+    });
+
+    it("should throw when saving a factor with a duplicate (name, unit)", async () => {
+      const { name, unit, emissionCO2eInKgPerUnit, source } =
+        olivedOilEmissionFactor;
+      await expect(
+        carbonEmissionFactorService.save([
+          {
+            name,
+            unit,
+            emissionCO2eInKgPerUnit,
+            source,
+          },
+        ]),
+      ).rejects.toThrow(
+        "A carbon emission factor with the same name and unit already exists",
+      );
+    });
   });
 
   describe("upsert", () => {

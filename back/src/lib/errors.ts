@@ -2,6 +2,15 @@ import { ValidationError } from "class-validator";
 import { NextFunction, Request, Response } from "express";
 import { ValidateError } from "tsoa";
 
+export const PG_UNIQUE_CONSTRAINT_VIOLATION = "23505";
+
+export class ConflictError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ConflictError";
+  }
+}
+
 export function validationErrorHandler(
   err: unknown,
   _: Request,
@@ -23,6 +32,13 @@ export function validationErrorHandler(
         field: e.property,
         constraints: e.constraints,
       })),
+    });
+    return;
+  }
+
+  if (err instanceof ConflictError) {
+    res.status(409).json({
+      message: err.message,
     });
     return;
   }
