@@ -19,7 +19,7 @@ export class CarbonEmissionFactorsController extends Controller {
     console.log(
       `[carbon-emission-factors] [GET] CarbonEmissionFactor: getting all CarbonEmissionFactors`,
     );
-    return this.carbonEmissionFactorService.findAll();
+    return await this.carbonEmissionFactorService.findAll();
   }
 
   @Post()
@@ -36,7 +36,7 @@ export class CarbonEmissionFactorsController extends Controller {
     );
 
     const savedFactors =
-      this.carbonEmissionFactorService.save(validatedFactors);
+      await this.carbonEmissionFactorService.save(validatedFactors);
 
     console.log(
       `[carbon-emission-factors] [POST] CarbonEmissionFactor: ${carbonEmissionFactors.length} items created`,
@@ -59,7 +59,7 @@ export class CarbonEmissionFactorsController extends Controller {
     );
 
     const upsertedFactors =
-      this.carbonEmissionFactorService.upsert(validatedFactors);
+      await this.carbonEmissionFactorService.upsert(validatedFactors);
 
     console.log(
       `[carbon-emission-factors] [PATCH] CarbonEmissionFactor: ${carbonEmissionFactors.length} items upserted`,

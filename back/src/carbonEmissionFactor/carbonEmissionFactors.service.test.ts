@@ -63,18 +63,18 @@ describe("CarbonEmissionFactors.service", () => {
     it("should update emissionCO2eInKgPerUnit for an existing factor", async () => {
       await carbonEmissionFactorService.upsert([
         {
-          name: hamEmissionFactor.name,
-          unit: hamEmissionFactor.unit,
+          name: olivedOilEmissionFactor.name,
+          unit: olivedOilEmissionFactor.unit,
           emissionCO2eInKgPerUnit: 0.2,
           source: "Updated source",
         },
       ]);
 
-      const updatedHamEmissionFactor = await dataSource
+      const updatedOlivedOilEmissionFactor = await dataSource
         .getRepository(CarbonEmissionFactor)
-        .findOne({ where: { name: "ham", unit: "kg" } });
+        .findOne({ where: { name: "oliveOil", unit: "kg" } });
 
-      expect(updatedHamEmissionFactor?.emissionCO2eInKgPerUnit).toBe(0.2);
+      expect(updatedOlivedOilEmissionFactor?.emissionCO2eInKgPerUnit).toBe(0.2);
     });
 
     it("should insert a new factor if it does not exist", async () => {
