@@ -2,18 +2,11 @@ import { dataSource } from "../../config/dataSource";
 import { CreateFoodProductDto } from "./dto/create-foodProduct.dto";
 import { FoodProduct } from "./foodProduct.entity";
 import { computeCarbonFootprint } from "./foodProduct.utils";
-import { CarbonEmissionFactor } from "../../src/carbonEmissionFactor/carbonEmissionFactor.entity";
-import {
-  ConflictError,
-  isUniqueConstraintViolation,
-} from "../../src/lib/errors";
+import { CarbonEmissionFactor } from "../carbonEmissionFactor/carbonEmissionFactor.entity";
+import { ConflictError, isUniqueConstraintViolation } from "../lib/errors";
 
 export class FoodProductsService {
   async create(foodProductData: CreateFoodProductDto): Promise<FoodProduct> {
-    if (!dataSource.isInitialized) {
-      await dataSource.initialize();
-    }
-
     const emissionFactors = await dataSource
       .getRepository(CarbonEmissionFactor)
       .find({

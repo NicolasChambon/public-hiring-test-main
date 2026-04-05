@@ -5,9 +5,6 @@ import { ConflictError, isUniqueConstraintViolation } from "../lib/errors";
 
 export class CarbonEmissionFactorsService {
   async findAll(): Promise<CarbonEmissionFactor[]> {
-    if (!dataSource.isInitialized) {
-      await dataSource.initialize();
-    }
     const repository = dataSource.getRepository(CarbonEmissionFactor);
     return repository.find();
   }
@@ -15,10 +12,6 @@ export class CarbonEmissionFactorsService {
   async save(
     carbonEmissionFactor: CreateCarbonEmissionFactorDto[],
   ): Promise<CarbonEmissionFactor[]> {
-    if (!dataSource.isInitialized) {
-      await dataSource.initialize();
-    }
-
     try {
       const repository = dataSource.getRepository(CarbonEmissionFactor);
       return await repository.save(carbonEmissionFactor);
@@ -34,9 +27,6 @@ export class CarbonEmissionFactorsService {
   async upsert(
     factors: CreateCarbonEmissionFactorDto[],
   ): Promise<CarbonEmissionFactor[]> {
-    if (!dataSource.isInitialized) {
-      await dataSource.initialize();
-    }
     const repository = dataSource.getRepository(CarbonEmissionFactor);
 
     await repository.upsert(factors, {

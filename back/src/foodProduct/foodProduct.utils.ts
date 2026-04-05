@@ -1,4 +1,4 @@
-import { CarbonEmissionFactor } from "src/carbonEmissionFactor/carbonEmissionFactor.entity";
+import { CarbonEmissionFactor } from "../carbonEmissionFactor/carbonEmissionFactor.entity";
 import { Ingredient } from "./foodProduct.types";
 
 export function computeCarbonFootprint(
