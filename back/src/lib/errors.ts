@@ -3,8 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import { ValidateError } from "tsoa";
 
 export function validationErrorHandler(
-  err: Error,
-  req: Request,
+  err: unknown,
+  _: Request,
   res: Response,
   next: NextFunction,
 ): void {

@@ -16,7 +16,7 @@ app.use(json());
 
 // Initialize database connection before registering routes
 export const initializeApp = async () => {
-  GreenlyDataSource.getInstance();
+  await GreenlyDataSource.getInstance();
   RegisterRoutes(app);
 
   app.use(validationErrorHandler);

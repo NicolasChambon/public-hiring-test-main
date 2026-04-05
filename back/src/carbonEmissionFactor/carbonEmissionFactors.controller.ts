@@ -34,9 +34,13 @@ export class CarbonEmissionFactorsController extends Controller {
       validatedFactors.map((factor) => validateOrReject(factor)),
     );
 
+    const savedFactors =
+      this.carbonEmissionFactorService.save(validatedFactors);
+
     console.log(
       `[carbon-emission-factors] [POST] CarbonEmissionFactor: ${carbonEmissionFactors.length} items created`,
     );
-    return this.carbonEmissionFactorService.save(validatedFactors);
+
+    return savedFactors;
   }
 }
