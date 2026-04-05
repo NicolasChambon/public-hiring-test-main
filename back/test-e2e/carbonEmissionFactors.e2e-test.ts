@@ -67,7 +67,6 @@ describe("CarbonEmissionFactorsController", () => {
         name: "Invalid Carbon Emission Factor",
         unit: "kg",
         emissionCO2eInKgPerUnit: 12,
-        // source is missing
       };
       return request(app)
         .post("/carbon-emission-factors")
@@ -82,7 +81,7 @@ describe("CarbonEmissionFactorsController", () => {
       const invalidCarbonEmissionFactorArgs = {
         name: "Invalid Carbon Emission Factor",
         unit: "kg",
-        emissionCO2eInKgPerUnit: "not a number", // Invalid type
+        emissionCO2eInKgPerUnit: "not a number",
         source: "Test Source",
       };
       return request(app)
@@ -92,6 +91,52 @@ describe("CarbonEmissionFactorsController", () => {
         .expect(({ body }) => {
           expect(body.message).toContain("Validation failed");
         });
+    });
+
+    describe("PATCH /carbon-emission-factors", () => {
+      it("should upsert carbon emission factors", async () => {
+        const upsertArgs = [
+          {
+            name: "ham",
+            unit: "kg",
+            emissionCO2eInKgPerUnit: 0.2,
+            source: "Updated source",
+          },
+          {
+            name: "newFactor",
+            unit: "kg",
+            emissionCO2eInKgPerUnit: 0.5,
+            source: "New source",
+          },
+        ];
+
+        return request(app)
+          .patch("/carbon-emission-factors")
+          .send(upsertArgs)
+          .expect(200)
+          .expect(({ body }) => {
+            expect(body).toHaveLength(2);
+          });
+      });
+
+      it("should return 422 for invalid upsert data", async () => {
+        const invalidUpsertArgs = [
+          {
+            name: "ham",
+            unit: "kg",
+            emissionCO2eInKgPerUnit: "not a number",
+            source: "Updated source",
+          },
+        ];
+
+        return request(app)
+          .patch("/carbon-emission-factors")
+          .send(invalidUpsertArgs)
+          .expect(422)
+          .expect(({ body }) => {
+            expect(body.message).toContain("Validation failed");
+          });
+      });
     });
   });
 });

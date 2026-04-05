@@ -20,4 +20,25 @@ export class CarbonEmissionFactorsService {
     const repository = dataSource.getRepository(CarbonEmissionFactor);
     return repository.save(carbonEmissionFactor);
   }
+
+  async upsert(
+    factors: CreateCarbonEmissionFactorDto[],
+  ): Promise<CarbonEmissionFactor[]> {
+    if (!dataSource.isInitialized) {
+      await dataSource.initialize();
+    }
+    const repository = dataSource.getRepository(CarbonEmissionFactor);
+
+    await repository.upsert(factors, {
+      conflictPaths: ["name", "unit"],
+      skipUpdateIfNoValuesChanged: true,
+    });
+
+    return repository.find({
+      where: factors.map((factor) => ({
+        name: factor.name,
+        unit: factor.unit,
+      })),
+    });
+  }
 }
