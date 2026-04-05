@@ -2,6 +2,8 @@ import { Body, Controller, Get, Post, Route } from "tsoa";
 import { CarbonEmissionFactor } from "./carbonEmissionFactor.entity";
 import { CarbonEmissionFactorsService } from "./carbonEmissionFactors.service";
 import { CreateCarbonEmissionFactorDto } from "./dto/create-carbonEmissionFactor.dto";
+import { plainToInstance } from "class-transformer";
+import { validateOrReject } from "class-validator";
 
 @Route("carbon-emission-factors")
 export class CarbonEmissionFactorsController extends Controller {
@@ -15,18 +17,30 @@ export class CarbonEmissionFactorsController extends Controller {
   @Get()
   public async getCarbonEmissionFactors(): Promise<CarbonEmissionFactor[]> {
     console.log(
-      `[carbon-emission-factors] [GET] CarbonEmissionFactor: getting all CarbonEmissionFactors`
+      `[carbon-emission-factors] [GET] CarbonEmissionFactor: getting all CarbonEmissionFactors`,
     );
     return this.carbonEmissionFactorService.findAll();
   }
 
   @Post()
   public async createCarbonEmissionFactors(
-    @Body() carbonEmissionFactors: CreateCarbonEmissionFactorDto[]
-  ): Promise<CarbonEmissionFactor[] | null> {
-    console.log(
-      `[carbon-emission-factors] [POST] CarbonEmissionFactor: ${carbonEmissionFactors.length} items created`
+    @Body() carbonEmissionFactors: CreateCarbonEmissionFactorDto[],
+  ): Promise<CarbonEmissionFactor[]> {
+    const validatedFactors = plainToInstance(
+      CreateCarbonEmissionFactorDto,
+      carbonEmissionFactors,
     );
-    return this.carbonEmissionFactorService.save(carbonEmissionFactors);
+    await Promise.all(
+      validatedFactors.map((factor) => validateOrReject(factor)),
+    );
+
+    const savedFactors =
+      this.carbonEmissionFactorService.save(validatedFactors);
+
+    console.log(
+      `[carbon-emission-factors] [POST] CarbonEmissionFactor: ${carbonEmissionFactors.length} items created`,
+    );
+
+    return savedFactors;
   }
 }

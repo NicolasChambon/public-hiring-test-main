@@ -1,8 +1,8 @@
-import * as express from "express";
-import { json, urlencoded } from "express";
+import express, { json, urlencoded } from "express";
 
 import { RegisterRoutes } from "../build/routes";
 import { GreenlyDataSource } from "../config/dataSource";
+import { validationErrorHandler } from "./lib/errors";
 
 export const app = express();
 
@@ -10,7 +10,7 @@ export const app = express();
 app.use(
   urlencoded({
     extended: true,
-  })
+  }),
 );
 app.use(json());
 
@@ -18,5 +18,8 @@ app.use(json());
 export const initializeApp = async () => {
   await GreenlyDataSource.getInstance();
   RegisterRoutes(app);
+
+  app.use(validationErrorHandler);
+
   return app;
 };

@@ -1,0 +1,22 @@
+@api_url = http://localhost:3000/carbon-emission-factors
+
+###
+
+# GET List Carbon Emission Factors
+GET {{api_url}}
+
+###
+
+# POST Create Carbon Emission Factor
+POST {{api_url}}
+Content-Type: application/json
+
+[
+  {  
+    "name": "egg",
+    "unit": "kg",
+    "emissionCO2eInKgPerUnit": 0.23,
+    "source": "Agrybalise"
+  }
+]
+
