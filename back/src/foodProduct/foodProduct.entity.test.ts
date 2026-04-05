@@ -1,11 +1,8 @@
-import { GreenlyDataSource, dataSource } from "../../config/dataSource";
 import { FoodProduct } from "./foodProduct.entity";
 
 let pizzaProduct: FoodProduct;
 
 beforeAll(async () => {
-  await dataSource.initialize();
-
   pizzaProduct = new FoodProduct({
     name: "hamCheesePizza",
     ingredients: [
@@ -27,10 +24,6 @@ beforeAll(async () => {
     ],
     carbonFootprintInKgCO2e: 0.8,
   });
-});
-
-beforeEach(async () => {
-  await GreenlyDataSource.cleanDatabase();
 });
 
 describe("FoodProductEntity constructor", () => {
@@ -72,8 +65,4 @@ describe("FoodProductEntity constructor", () => {
     expect(productWithNullEmission.carbonFootprintInKgCO2e).toBeNull();
     expect(productWithNullEmission.name).toBe("unknownProduct");
   });
-});
-
-afterAll(async () => {
-  await dataSource.destroy();
 });

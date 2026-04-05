@@ -5,13 +5,13 @@ export const TEST_CARBON_EMISSION_FACTORS = [
   {
     name: "ham",
     unit: "kg",
-    emissionCO2eInKgPerUnit: 0.11,
+    emissionCO2eInKgPerUnit: 0.1,
     source: "Agrybalise",
   },
   {
     name: "cheese",
     unit: "kg",
-    emissionCO2eInKgPerUnit: 0.12,
+    emissionCO2eInKgPerUnit: 0.2,
     source: "Agrybalise",
   },
   {
@@ -61,11 +61,11 @@ export const TEST_CARBON_EMISSION_FACTORS = [
 
 export const getTestEmissionFactor = (name: string) => {
   const emissionFactor = TEST_CARBON_EMISSION_FACTORS.find(
-    (ef) => ef.name === name
+    (ef) => ef.name === name,
   );
   if (!emissionFactor) {
     throw new Error(
-      `test emission factor with name ${name} could not be found`
+      `test emission factor with name ${name} could not be found`,
     );
   }
   return emissionFactor;

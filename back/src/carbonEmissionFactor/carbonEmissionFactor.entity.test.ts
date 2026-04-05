@@ -1,20 +1,14 @@
-import { GreenlyDataSource, dataSource } from "../../config/dataSource";
 import { CarbonEmissionFactor } from "./carbonEmissionFactor.entity";
 
 let chickenEmissionFactor: CarbonEmissionFactor;
 
 beforeAll(async () => {
-  await dataSource.initialize();
   chickenEmissionFactor = new CarbonEmissionFactor({
     emissionCO2eInKgPerUnit: 2.4,
     unit: "kg",
     name: "chicken",
     source: "Agrybalise",
   });
-});
-
-beforeEach(async () => {
-  await GreenlyDataSource.cleanDatabase();
 });
 
 describe("CarbonEmissionFactorEntity constructor", () => {
@@ -24,8 +18,4 @@ describe("CarbonEmissionFactorEntity constructor", () => {
     expect(chickenEmissionFactor.unit).toBe("kg");
     expect(chickenEmissionFactor.source).toBe("Agrybalise");
   });
-});
-
-afterAll(async () => {
-  await dataSource.destroy();
 });
