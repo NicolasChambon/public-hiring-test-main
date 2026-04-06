@@ -27,12 +27,13 @@ export function computeCarbonFootprint(
       return { ...ingredient, carbonFootprint: null };
     }
 
-    totalCarbonFootprint +=
+    const carbonFootprint =
       ingredient.quantity * factor.emissionCO2eInKgPerUnit;
+    totalCarbonFootprint += carbonFootprint;
 
     return {
       ...ingredient,
-      carbonFootprint: ingredient.quantity * factor.emissionCO2eInKgPerUnit,
+      carbonFootprint: carbonFootprint,
     };
   });
 

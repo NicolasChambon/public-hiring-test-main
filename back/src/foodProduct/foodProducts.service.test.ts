@@ -16,7 +16,7 @@ beforeEach(async () => {
 
 describe("FoodProducts.service", () => {
   describe("create", () => {
-    it("should persist a food product with its total computed carbon footprint and ingrendient footprint", async () => {
+    it("should persist a food product with its total computed carbon footprint and ingredient footprint", async () => {
       const foodProduct = await foodProductsService.create({
         name: "hamCheesePizza",
         ingredients: [
