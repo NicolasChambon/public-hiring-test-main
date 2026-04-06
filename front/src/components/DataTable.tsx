@@ -1,23 +1,24 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 // Column configuration
 export type ColumnConfig<T> = {
   key: keyof T;
   label: string;
-  type: "string" | "number";
   cellClassName: string;
 };
 
-interface DataTableProps<T extends { id: string | number }> {
+interface DataTableProps<T extends { id: number }> {
   data: T[];
   columns: ColumnConfig<T>[];
   sortField: keyof T | null;
   sortDirection: "asc" | "desc";
   onSort: (field: keyof T) => void;
-  renderCell?: (item: T, column: ColumnConfig<T>) => React.ReactNode;
+  renderCell?: (item: T, column: ColumnConfig<T>) => ReactNode;
 }
 
-export default function DataTable<T extends { id: string | number }>({
+export default function DataTable<T extends { id: number }>({
   data,
   columns,
   sortField,

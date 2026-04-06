@@ -11,31 +11,26 @@ const columns: ColumnConfig<CarbonEmissionFactor>[] = [
   {
     key: "id",
     label: "ID",
-    type: "number",
     cellClassName: "whitespace-nowrap text-sm text-gray-900",
   },
   {
     key: "name",
     label: "Name",
-    type: "string",
     cellClassName: "whitespace-nowrap text-sm text-gray-900",
   },
   {
     key: "unit",
     label: "Unit",
-    type: "string",
     cellClassName: "whitespace-nowrap text-sm text-gray-500",
   },
   {
     key: "emissionCO2eInKgPerUnit",
     label: "CO2e Emission (kg per unit)",
-    type: "number",
     cellClassName: "whitespace-nowrap text-sm text-gray-900",
   },
   {
     key: "source",
     label: "Source",
-    type: "string",
     cellClassName: "text-sm text-gray-500 max-w-xs",
   },
 ];
