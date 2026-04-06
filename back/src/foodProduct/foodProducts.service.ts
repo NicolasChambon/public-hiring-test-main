@@ -8,6 +8,7 @@ import {
   isUniqueConstraintViolation,
   NotFoundError,
 } from "../lib/errors";
+import { Ingredient } from "./foodProduct.types";
 
 export class FoodProductsService {
   async findAll(): Promise<FoodProduct[]> {
@@ -31,17 +32,8 @@ export class FoodProductsService {
   }
 
   async create(foodProductData: CreateFoodProductDto): Promise<FoodProduct> {
-    const emissionFactors = await dataSource
-      .getRepository(CarbonEmissionFactor)
-      .find({
-        where: foodProductData.ingredients.map((ingredient) => ({
-          name: ingredient.name,
-          unit: ingredient.unit,
-        })),
-      });
-
     const { totalCarbonFootprint, ingredientsWithCarbonFootprint } =
-      computeCarbonFootprint(foodProductData.ingredients, emissionFactors);
+      await this.fetchAndComputeCarbonFootprint(foodProductData.ingredients);
 
     const foodProduct = new FoodProduct({
       name: foodProductData.name,
@@ -58,5 +50,30 @@ export class FoodProductsService {
           )
         : error;
     }
+  }
+
+  async recomputeCarbonFootprint(id: number): Promise<FoodProduct> {
+    const foodProduct = await this.findById(id);
+
+    const { totalCarbonFootprint, ingredientsWithCarbonFootprint } =
+      await this.fetchAndComputeCarbonFootprint(foodProduct.ingredients);
+
+    foodProduct.ingredients = ingredientsWithCarbonFootprint;
+    foodProduct.carbonFootprintInKgCO2e = totalCarbonFootprint;
+
+    return await dataSource.getRepository(FoodProduct).save(foodProduct);
+  }
+
+  private async fetchAndComputeCarbonFootprint(ingredients: Ingredient[]) {
+    const emissionFactors = await dataSource
+      .getRepository(CarbonEmissionFactor)
+      .find({
+        where: ingredients.map((ingredient) => ({
+          name: ingredient.name,
+          unit: ingredient.unit,
+        })),
+      });
+
+    return computeCarbonFootprint(ingredients, emissionFactors);
   }
 }
