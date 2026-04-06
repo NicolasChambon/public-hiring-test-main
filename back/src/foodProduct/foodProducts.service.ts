@@ -3,9 +3,33 @@ import { CreateFoodProductDto } from "./dto/create-foodProduct.dto";
 import { FoodProduct } from "./foodProduct.entity";
 import { computeCarbonFootprint } from "./foodProduct.utils";
 import { CarbonEmissionFactor } from "../carbonEmissionFactor/carbonEmissionFactor.entity";
-import { ConflictError, isUniqueConstraintViolation } from "../lib/errors";
+import {
+  ConflictError,
+  isUniqueConstraintViolation,
+  NotFoundError,
+} from "../lib/errors";
 
 export class FoodProductsService {
+  async findAll(): Promise<FoodProduct[]> {
+    return dataSource.getRepository(FoodProduct).find({
+      order: {
+        id: "ASC",
+      },
+    });
+  }
+
+  async findById(id: number): Promise<FoodProduct> {
+    const foodProduct = await dataSource
+      .getRepository(FoodProduct)
+      .findOneBy({ id });
+
+    if (!foodProduct) {
+      throw new NotFoundError(`Food product with id ${id} not found.`);
+    }
+
+    return foodProduct;
+  }
+
   async create(foodProductData: CreateFoodProductDto): Promise<FoodProduct> {
     const emissionFactors = await dataSource
       .getRepository(CarbonEmissionFactor)

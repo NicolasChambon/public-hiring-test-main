@@ -7,16 +7,42 @@ GET {{api_url}}
 
 ###
 
-# POST Create Carbon Emission Factor
+# POST Create Carbon Emission Factors
 POST {{api_url}}
 Content-Type: application/json
 
 [
   {  
-    "name": "egg",
+    "name": "coucou",
     "unit": "kg",
     "emissionCO2eInKgPerUnit": 0.23,
+    "source": "Agrybalise"
+  },
+  {  
+    "name": "milk",
+    "unit": "kg",
+    "emissionCO2eInKgPerUnit": 1.2,
     "source": "Agrybalise"
   }
 ]
 
+###
+
+# PATCH Upsert Carbon Emission Factors
+PATCH {{api_url}}
+Content-Type: application/json
+
+[
+  {  
+    "name": "coucou",
+    "unit": "kg",
+    "emissionCO2eInKgPerUnit": 0.23,
+    "source": "Agrybalise"
+  },
+  {  
+    "name": "milku",
+    "unit": "kg",
+    "emissionCO2eInKgPerUnit": 1.2,
+    "source": "Agrybalise"
+  }
+]

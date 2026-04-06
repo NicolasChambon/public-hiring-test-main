@@ -64,6 +64,46 @@ describe("FoodProducts.service", () => {
       );
     });
   });
+
+  describe("findAll", () => {
+    it("should should return an empty array when no food products exist", async () => {
+      const foodProducts = await foodProductsService.findAll();
+      expect(foodProducts).toEqual([]);
+    });
+
+    it("should return all persisted food products", async () => {
+      await foodProductsService.create({
+        name: "foodProduct1",
+        ingredients: [{ name: "ham", unit: "kg", quantity: 0.2 }],
+      });
+
+      await foodProductsService.create({
+        name: "foodProduct2",
+        ingredients: [{ name: "cheese", unit: "kg", quantity: 0.1 }],
+      });
+
+      const foodProducts = await foodProductsService.findAll();
+      expect(foodProducts).toHaveLength(2);
+      expect(foodProducts[0].name).toBe("foodProduct1");
+      expect(foodProducts[1].name).toBe("foodProduct2");
+    });
+  });
+
+  describe("findById", () => {
+    it("should return the food product when it exists", async () => {
+      const createdFoodProduct = await foodProductsService.create({
+        name: "foodProduct1",
+        ingredients: [{ name: "ham", unit: "kg", quantity: 0.2 }],
+      });
+
+      const retrievedFoodProduct = await foodProductsService.findById(
+        createdFoodProduct.id,
+      );
+
+      expect(retrievedFoodProduct).not.toBeNull();
+      expect(retrievedFoodProduct!.name).toBe("foodProduct1");
+    });
+  });
 });
 
 afterAll(async () => {
