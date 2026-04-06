@@ -23,13 +23,7 @@ export class FoodProductsController extends Controller {
 
   @Get("{id}")
   public async getFoodProductById(@Path() id: number): Promise<FoodProduct> {
-    const foodProduct = await this.foodProductsService.findById(id);
-
-    if (!foodProduct) {
-      throw new NotFoundError(`Food product with id ${id} not found.`);
-    }
-
-    return foodProduct;
+    return await this.foodProductsService.findById(id);
   }
 
   @Post()

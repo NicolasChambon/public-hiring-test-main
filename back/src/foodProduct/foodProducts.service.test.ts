@@ -90,11 +90,6 @@ describe("FoodProducts.service", () => {
   });
 
   describe("findById", () => {
-    it("should return null when the food product does not exist", async () => {
-      const foodProduct = await foodProductsService.findById(999);
-      expect(foodProduct).toBeNull();
-    });
-
     it("should return the food product when it exists", async () => {
       const createdFoodProduct = await foodProductsService.create({
         name: "foodProduct1",

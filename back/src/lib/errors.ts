@@ -1,5 +1,5 @@
 import { ValidationError } from "class-validator";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ValidateError } from "tsoa";
 import { QueryFailedError } from "typeorm";
 
@@ -19,7 +19,12 @@ export class NotFoundError extends Error {
   }
 }
 
-export function errorHandler(err: unknown, _: Request, res: Response): void {
+export function errorHandler(
+  err: unknown,
+  _req: Request,
+  res: Response,
+  _next: NextFunction,
+): void {
   if (err instanceof ValidateError) {
     res.status(422).json({
       message: "Validation failed",

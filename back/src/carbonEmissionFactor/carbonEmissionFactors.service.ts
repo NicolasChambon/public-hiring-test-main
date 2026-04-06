@@ -6,7 +6,11 @@ import { ConflictError, isUniqueConstraintViolation } from "../lib/errors";
 export class CarbonEmissionFactorsService {
   async findAll(): Promise<CarbonEmissionFactor[]> {
     const repository = dataSource.getRepository(CarbonEmissionFactor);
-    return repository.find();
+    return repository.find({
+      order: {
+        id: "ASC",
+      },
+    });
   }
 
   async save(
