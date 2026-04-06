@@ -5,8 +5,9 @@ import DataTable, { ColumnConfig } from "@/components/DataTable";
 import { CarbonEmissionFactor } from "@/types/carbon-emission-factor";
 import { useEffect, useState } from "react";
 
-// Column configuration
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
+// Column configuration
 const columns: ColumnConfig[] = [
   {
     key: "id",
@@ -51,7 +52,7 @@ export default function Home() {
   const [showForm, setShowForm] = useState(false);
   const [creating, setCreating] = useState(false);
   const [sortField, setSortField] = useState<keyof CarbonEmissionFactor | null>(
-    null
+    null,
   );
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
@@ -59,7 +60,7 @@ export default function Home() {
     const fetchCarbonFactors = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/carbon-emission-factors");
+        const response = await fetch(`${API_URL}/carbon-emission-factors`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -99,7 +100,7 @@ export default function Home() {
         (factor) =>
           factor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           factor.unit.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          factor.source.toLowerCase().includes(searchQuery.toLowerCase())
+          factor.source.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
 
@@ -136,7 +137,7 @@ export default function Home() {
   }) => {
     try {
       setCreating(true);
-      const response = await fetch("/api/carbon-emission-factors", {
+      const response = await fetch(`${API_URL}/carbon-emission-factors`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -149,7 +150,7 @@ export default function Home() {
       }
 
       // Refresh the data
-      const factorsResponse = await fetch("/api/carbon-emission-factors");
+      const factorsResponse = await fetch(`${API_URL}/carbon-emission-factors`);
       if (factorsResponse.ok) {
         const data: CarbonEmissionFactor[] = await factorsResponse.json();
         setFactors(data);
