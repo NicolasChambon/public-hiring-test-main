@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Path, Post, Route } from "tsoa";
+import { Body, Controller, Get, Patch, Path, Post, Route } from "tsoa";
 import { FoodProductsService } from "./foodProducts.service";
 import { FoodProduct } from "./foodProduct.entity";
-import { NotFoundError } from "../lib/errors";
 import { CreateFoodProductDto } from "./dto/create-foodProduct.dto";
 import { plainToInstance } from "class-transformer";
 import { validateOrReject } from "class-validator";
@@ -46,5 +45,19 @@ export class FoodProductsController extends Controller {
 
     this.setStatus(201);
     return createdFoodProduct;
+  }
+
+  @Patch("{id}/recompute-carbon-footprint")
+  public async recomputeCarbonFootprint(
+    @Path() id: number,
+  ): Promise<FoodProduct> {
+    const updatedFoodProduct =
+      await this.foodProductsService.recomputeCarbonFootprint(id);
+
+    console.log(
+      `[food-products] [PATCH] FoodProduct: recomputed carbon footprint for food product with id ${id}`,
+    );
+
+    return updatedFoodProduct;
   }
 }

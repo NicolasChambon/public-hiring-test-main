@@ -1,6 +1,7 @@
 import { dataSource, GreenlyDataSource } from "../../config/dataSource";
 import { FoodProductsService } from "./foodProducts.service";
 import { seedTestCarbonEmissionFactors } from "../seed-dev-data";
+import { FoodProduct } from "./foodProduct.entity";
 
 let foodProductsService: FoodProductsService;
 

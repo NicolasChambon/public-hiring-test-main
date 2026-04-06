@@ -198,4 +198,62 @@ describe("FoodProductsController", () => {
         });
     });
   });
+
+  describe("PATCH /food-products/{id}/recompute-carbon-footprint", () => {
+    it("should recompute and update the carbon footprint of a food product", async () => {
+      const createResponse = await request(app)
+        .post("/food-products")
+        .send({
+          name: "Recompute Test Product",
+          ingredients: [
+            { name: "ham", unit: "kg", quantity: 0.5 },
+            { name: "nonExistingIngredient", unit: "kg", quantity: 1 },
+          ],
+        })
+        .expect(201)
+        .expect(({ body }) => {
+          expect(body.carbonFootprintInKgCO2e).toBeNull();
+        });
+
+      const productId = createResponse.body.id;
+
+      await dataSource.getRepository(CarbonEmissionFactor).save({
+        name: "nonExistingIngredient",
+        unit: "kg",
+        emissionCO2eInKgPerUnit: 0.3,
+        source: "test",
+      });
+
+      return request(app)
+        .patch(`/food-products/${productId}/recompute-carbon-footprint`)
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.id).toBe(productId);
+          expect(body.carbonFootprintInKgCO2e).toBe(0.5 * 0.1 + 1 * 0.3);
+          expect(body.ingredients).toEqual([
+            {
+              name: "ham",
+              unit: "kg",
+              quantity: 0.5,
+              carbonFootprint: 0.5 * 0.1,
+            },
+            {
+              name: "nonExistingIngredient",
+              unit: "kg",
+              quantity: 1,
+              carbonFootprint: 1 * 0.3,
+            },
+          ]);
+        });
+    });
+
+    it("should return 404 when trying to recompute a non-existing food product", async () => {
+      return request(app)
+        .patch("/food-products/9999/recompute-carbon-footprint")
+        .expect(404)
+        .expect(({ body }) => {
+          expect(body.message).toBe("Food product with id 9999 not found.");
+        });
+    });
+  });
 });
