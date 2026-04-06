@@ -7,39 +7,62 @@ import { useEffect, useState } from "react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-// Column configuration
-const columns: ColumnConfig[] = [
+const columns: ColumnConfig<CarbonEmissionFactor>[] = [
   {
     key: "id",
     label: "ID",
-    type: "number",
     cellClassName: "whitespace-nowrap text-sm text-gray-900",
   },
   {
     key: "name",
     label: "Name",
-    type: "string",
     cellClassName: "whitespace-nowrap text-sm text-gray-900",
   },
   {
     key: "unit",
     label: "Unit",
-    type: "string",
     cellClassName: "whitespace-nowrap text-sm text-gray-500",
   },
   {
     key: "emissionCO2eInKgPerUnit",
     label: "CO2e Emission (kg per unit)",
-    type: "number",
     cellClassName: "whitespace-nowrap text-sm text-gray-900",
   },
   {
     key: "source",
     label: "Source",
-    type: "string",
     cellClassName: "text-sm text-gray-500 max-w-xs",
   },
 ];
+
+const renderCell = (
+  item: CarbonEmissionFactor,
+  column: ColumnConfig<CarbonEmissionFactor>,
+) => {
+  const value = item[column.key];
+
+  if (column.key === "emissionCO2eInKgPerUnit") {
+    return (
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+        {value}
+      </span>
+    );
+  }
+
+  if (column.key === "name") {
+    return <div className="text-sm font-medium text-gray-900">{value}</div>;
+  }
+
+  if (column.key === "source") {
+    return (
+      <div className="truncate" title={String(value)}>
+        {value}
+      </div>
+    );
+  }
+
+  return String(value ?? "");
+};
 
 export default function Home() {
   const [factors, setFactors] = useState<CarbonEmissionFactor[]>([]);
@@ -326,12 +349,13 @@ export default function Home() {
               </p>
             </div>
           ) : (
-            <DataTable
+            <DataTable<CarbonEmissionFactor>
               data={filteredFactors}
               columns={columns}
               sortField={sortField}
               sortDirection={sortDirection}
               onSort={handleSort}
+              renderCell={renderCell}
             />
           )}
         </div>

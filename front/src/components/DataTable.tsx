@@ -1,55 +1,33 @@
 "use client";
 
-import { CarbonEmissionFactor } from "@/types/carbon-emission-factor";
+import type { ReactNode } from "react";
 
 // Column configuration
-export type ColumnConfig = {
-  key: keyof CarbonEmissionFactor;
+export type ColumnConfig<T> = {
+  key: keyof T;
   label: string;
-  type: "string" | "number";
   cellClassName: string;
 };
 
-interface DataTableProps {
-  data: CarbonEmissionFactor[];
-  columns: ColumnConfig[];
-  sortField: keyof CarbonEmissionFactor | null;
+interface DataTableProps<T extends { id: number }> {
+  data: T[];
+  columns: ColumnConfig<T>[];
+  sortField: keyof T | null;
   sortDirection: "asc" | "desc";
-  onSort: (field: keyof CarbonEmissionFactor) => void;
+  onSort: (field: keyof T) => void;
+  renderCell?: (item: T, column: ColumnConfig<T>) => ReactNode;
 }
 
-export default function DataTable({
+export default function DataTable<T extends { id: number }>({
   data,
   columns,
   sortField,
   sortDirection,
   onSort,
-}: DataTableProps) {
-  const renderCellContent = (item: CarbonEmissionFactor, column: ColumnConfig) => {
-    const value = item[column.key];
-    
-    if (column.key === "emissionCO2eInKgPerUnit") {
-      return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-          {value}
-        </span>
-      );
-    }
-    
-    if (column.key === "name") {
-      return <div className="text-sm font-medium text-gray-900">{value}</div>;
-    }
-    
-    if (column.key === "source") {
-      return (
-        <div className="truncate" title={String(value)}>
-          {value}
-        </div>
-      );
-    }
-    
-    return value;
-  };
+  renderCell,
+}: DataTableProps<T>) {
+  const defaultRenderCell = (item: T, column: ColumnConfig<T>) =>
+    String(item[column.key] ?? "");
 
   return (
     <div className="overflow-x-auto">
@@ -58,7 +36,7 @@ export default function DataTable({
           <tr>
             {columns.map((column) => (
               <th
-                key={column.key}
+                key={String(column.key)}
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
                 onClick={() => onSort(column.key)}
               >
@@ -95,10 +73,12 @@ export default function DataTable({
             <tr key={item.id} className="hover:bg-gray-50">
               {columns.map((column) => (
                 <td
-                  key={`${item.id}-${column.key}`}
+                  key={`${item.id}-${String(column.key)}`}
                   className={`px-6 py-4 ${column.cellClassName}`}
                 >
-                  {renderCellContent(item, column)}
+                  {renderCell
+                    ? renderCell(item, column)
+                    : defaultRenderCell(item, column)}
                 </td>
               ))}
             </tr>
