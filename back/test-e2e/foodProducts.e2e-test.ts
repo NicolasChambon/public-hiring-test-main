@@ -220,7 +220,8 @@ describe("FoodProductsController", () => {
       await dataSource.getRepository(CarbonEmissionFactor).save({
         name: "nonExistingIngredient",
         unit: "kg",
-        carbonFootprintInKgCO2e: 0.3,
+        emissionCO2eInKgPerUnit: 0.3,
+        source: "test",
       });
 
       return request(app)
@@ -229,6 +230,20 @@ describe("FoodProductsController", () => {
         .expect(({ body }) => {
           expect(body.id).toBe(productId);
           expect(body.carbonFootprintInKgCO2e).toBe(0.5 * 0.1 + 1 * 0.3);
+          expect(body.ingredients).toEqual([
+            {
+              name: "ham",
+              unit: "kg",
+              quantity: 0.5,
+              carbonFootprint: 0.5 * 0.1,
+            },
+            {
+              name: "nonExistingIngredient",
+              unit: "kg",
+              quantity: 1,
+              carbonFootprint: 1 * 0.3,
+            },
+          ]);
         });
     });
 
