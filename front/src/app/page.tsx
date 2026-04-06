@@ -5,6 +5,8 @@ import DataTable, { ColumnConfig } from "@/components/DataTable";
 import { CarbonEmissionFactor } from "@/types/carbon-emission-factor";
 import { useEffect, useState } from "react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
 // Column configuration
 const columns: ColumnConfig[] = [
   {
@@ -58,9 +60,7 @@ export default function Home() {
     const fetchCarbonFactors = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/carbon-emission-factors`,
-        );
+        const response = await fetch(`${API_URL}/carbon-emission-factors`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -137,25 +137,20 @@ export default function Home() {
   }) => {
     try {
       setCreating(true);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/carbon-emission-factors`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify([formData]), // Backend expects an array
+      const response = await fetch(`${API_URL}/carbon-emission-factors`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify([formData]), // Backend expects an array
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       // Refresh the data
-      const factorsResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/carbon-emission-factors`,
-      );
+      const factorsResponse = await fetch(`${API_URL}/carbon-emission-factors`);
       if (factorsResponse.ok) {
         const data: CarbonEmissionFactor[] = await factorsResponse.json();
         setFactors(data);
