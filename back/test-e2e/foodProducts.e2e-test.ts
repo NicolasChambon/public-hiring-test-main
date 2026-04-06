@@ -29,7 +29,7 @@ describe("FoodProductsController", () => {
   });
 
   describe("POST /food-products", () => {
-    it("should create a food product with its computed carbon footprint", async () => {
+    it("should create a food product with its computed carbon footprints", async () => {
       return request(app)
         .post("/food-products")
         .send({
@@ -44,10 +44,24 @@ describe("FoodProductsController", () => {
           expect(body.id).toBeDefined();
           expect(body.name).toBe("Test Food Product");
           expect(body.carbonFootprintInKgCO2e).toBe(0.5 * 0.1 + 0.2 * 14);
+          expect(body.ingredients).toEqual([
+            {
+              name: "ham",
+              unit: "kg",
+              quantity: 0.5,
+              carbonFootprint: 0.5 * 0.1,
+            },
+            {
+              name: "beef",
+              unit: "kg",
+              quantity: 0.2,
+              carbonFootprint: 0.2 * 14,
+            },
+          ]);
         });
     });
 
-    it("should persist null footprint when an ingredient has no matching factor", async () => {
+    it("should persist null total footprint when an ingredient has no matching factor", async () => {
       return request(app)
         .post("/food-products")
         .send({
@@ -62,6 +76,15 @@ describe("FoodProductsController", () => {
           expect(body.id).toBeDefined();
           expect(body.name).toBe("unknown ingredient product");
           expect(body.carbonFootprintInKgCO2e).toBeNull();
+          expect(body.ingredients).toEqual([
+            {
+              name: "unknownIngredient",
+              unit: "kg",
+              quantity: 1,
+              carbonFootprint: null,
+            },
+            { name: "ham", unit: "kg", quantity: 0.5, carbonFootprint: 0.05 }, // 0.5 * 0.1
+          ]);
         });
     });
 
