@@ -25,7 +25,7 @@ const columns: ColumnConfig<FoodProduct>[] = [
 ];
 
 export default function FoodProductsPage() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<FoodProduct[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
@@ -133,6 +133,7 @@ export default function FoodProductsPage() {
             sortDirection="asc"
             onSort={() => {}}
             renderCell={renderCell}
+            onRowClick={setSelectedProduct}
           />
         </div>
 

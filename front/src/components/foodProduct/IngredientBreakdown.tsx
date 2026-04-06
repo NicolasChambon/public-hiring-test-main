@@ -37,7 +37,7 @@ export default function IngredientBreakdown({
               </td>
               <td className="py-1.5 pl-2 text-gray-500">{ing.unit}</td>
               <td className="py-1.5 text-right">
-                {ing.carbonFootprint === null ? (
+                {ing.carbonFootprint == null ? (
                   <span className="text-red-500 text-xs">No factor</span>
                 ) : (
                   ing.carbonFootprint.toFixed(4)
