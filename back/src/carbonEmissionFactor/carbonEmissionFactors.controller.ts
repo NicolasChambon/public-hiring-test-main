@@ -42,6 +42,7 @@ export class CarbonEmissionFactorsController extends Controller {
       `[carbon-emission-factors] [POST] CarbonEmissionFactor: ${carbonEmissionFactors.length} items created`,
     );
 
+    this.setStatus(201);
     return savedFactors;
   }
 

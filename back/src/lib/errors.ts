@@ -1,5 +1,5 @@
 import { ValidationError } from "class-validator";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { ValidateError } from "tsoa";
 import { QueryFailedError } from "typeorm";
 
@@ -12,12 +12,14 @@ export class ConflictError extends Error {
   }
 }
 
-export function validationErrorHandler(
-  err: unknown,
-  _: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export class NotFoundError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "NotFoundError";
+  }
+}
+
+export function errorHandler(err: unknown, _: Request, res: Response): void {
   if (err instanceof ValidateError) {
     res.status(422).json({
       message: "Validation failed",
@@ -44,7 +46,15 @@ export function validationErrorHandler(
     return;
   }
 
-  next(err);
+  if (err instanceof NotFoundError) {
+    res.status(404).json({
+      message: err.message,
+    });
+    return;
+  }
+
+  console.error("Unexpected error: ", err);
+  res.status(500).json({ message: "Internal Server Error" });
 }
 
 export function isUniqueConstraintViolation(error: unknown): boolean {

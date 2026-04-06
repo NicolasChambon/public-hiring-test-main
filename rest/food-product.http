@@ -1,0 +1,40 @@
+@api_url = http://localhost:3000/food-products
+
+###
+
+# GET List Food Products
+GET {{api_url}}
+
+###
+
+# GET Get a Food Product by id
+GET {{api_url}}/2
+
+###
+
+# POST Create a Food Product
+POST {{api_url}}
+Content-Type: application/json
+
+{  
+  "name": "TomatosSalades",
+  "ingredients": [
+    {
+      "name": "tomato",
+      "quantity": 0.6,
+      "unit": "kg"
+    },
+    {
+      "name": "oliveOil",
+      "quantity": 0.1,
+      "unit": "kg"
+    },
+    {
+      "name": "salades",
+      "quantity": 0.3,
+      "unit": "kg"
+    }
+  ]
+}
+
+###

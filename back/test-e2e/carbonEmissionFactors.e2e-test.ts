@@ -4,6 +4,7 @@ import { dataSource } from "../config/dataSource";
 import { initializeApp } from "../src/app";
 import { CarbonEmissionFactor } from "../src/carbonEmissionFactor/carbonEmissionFactor.entity";
 import { getTestEmissionFactor } from "../src/seed-dev-data";
+import { FoodProduct } from "../src/foodProduct/foodProduct.entity";
 
 beforeAll(async () => {
   await dataSource.initialize();
@@ -22,6 +23,7 @@ describe("CarbonEmissionFactorsController", () => {
     app = await initializeApp();
 
     // Clear existing data and add test data
+    await dataSource.getRepository(FoodProduct).clear();
     await dataSource.getRepository(CarbonEmissionFactor).clear();
 
     await dataSource
@@ -55,7 +57,7 @@ describe("CarbonEmissionFactorsController", () => {
       return request(app)
         .post("/carbon-emission-factors")
         .send([carbonEmissionFactorArgs])
-        .expect(200) // Express/TSOA typically returns 200 for POST, not 201
+        .expect(201)
         .expect(({ body }) => {
           expect(body.length).toEqual(1);
           expect(body[0]).toMatchObject(carbonEmissionFactorArgs);

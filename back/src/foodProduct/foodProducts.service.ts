@@ -6,6 +6,15 @@ import { CarbonEmissionFactor } from "../carbonEmissionFactor/carbonEmissionFact
 import { ConflictError, isUniqueConstraintViolation } from "../lib/errors";
 
 export class FoodProductsService {
+  async findAll(): Promise<FoodProduct[]> {
+    const repository = dataSource.getRepository(FoodProduct);
+    return repository.find();
+  }
+
+  async findById(id: number): Promise<FoodProduct | null> {
+    return dataSource.getRepository(FoodProduct).findOneBy({ id });
+  }
+
   async create(foodProductData: CreateFoodProductDto): Promise<FoodProduct> {
     const emissionFactors = await dataSource
       .getRepository(CarbonEmissionFactor)
