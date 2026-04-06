@@ -16,6 +16,7 @@ interface DataTableProps<T extends { id: number }> {
   sortDirection: "asc" | "desc";
   onSort: (field: keyof T) => void;
   renderCell?: (item: T, column: ColumnConfig<T>) => ReactNode;
+  onRowClick?: (item: T) => void;
 }
 
 export default function DataTable<T extends { id: number }>({
@@ -25,6 +26,7 @@ export default function DataTable<T extends { id: number }>({
   sortDirection,
   onSort,
   renderCell,
+  onRowClick,
 }: DataTableProps<T>) {
   const defaultRenderCell = (item: T, column: ColumnConfig<T>) =>
     String(item[column.key] ?? "");
@@ -70,7 +72,11 @@ export default function DataTable<T extends { id: number }>({
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {data.map((item) => (
-            <tr key={item.id} className="hover:bg-gray-50">
+            <tr
+              key={item.id}
+              onClick={() => onRowClick?.(item)}
+              className={`hover:bg-gray-50 ${onRowClick ? "cursor-pointer" : ""}`}
+            >
               {columns.map((column) => (
                 <td
                   key={`${item.id}-${String(column.key)}`}

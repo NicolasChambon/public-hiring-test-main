@@ -1,7 +1,9 @@
 "use client";
 
-import CreateFactorModal from "@/components/CreateFactorModal";
+import CreateFactorModal from "@/components/carbonEmissionFactor/CreateFactorModal";
 import DataTable, { ColumnConfig } from "@/components/DataTable";
+import ErrorState from "@/components/ErrorState";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { CarbonEmissionFactor } from "@/types/carbon-emission-factor";
 import { useEffect, useState } from "react";
 
@@ -189,29 +191,8 @@ export default function Home() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="rounded-md bg-red-50 p-4 max-w-md">
-            <h3 className="text-lg font-medium text-red-800 mb-2">Error</h3>
-            <p className="text-red-700">{error}</p>
-            <p className="text-red-600 text-sm mt-2">
-              Make sure your backend is running on localhost:3000
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingSpinner />;
+  if (error) return <ErrorState error={error} />;
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
