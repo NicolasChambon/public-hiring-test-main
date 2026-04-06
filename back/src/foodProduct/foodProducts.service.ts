@@ -40,13 +40,13 @@ export class FoodProductsService {
         })),
       });
 
+    const { totalCarbonFootprint, ingredientsWithCarbonFootprint } =
+      computeCarbonFootprint(foodProductData.ingredients, emissionFactors);
+
     const foodProduct = new FoodProduct({
       name: foodProductData.name,
-      ingredients: foodProductData.ingredients,
-      carbonFootprintInKgCO2e: computeCarbonFootprint(
-        foodProductData.ingredients,
-        emissionFactors,
-      ),
+      ingredients: ingredientsWithCarbonFootprint,
+      carbonFootprintInKgCO2e: totalCarbonFootprint,
     });
 
     try {

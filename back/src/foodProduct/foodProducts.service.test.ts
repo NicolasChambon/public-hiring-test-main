@@ -16,7 +16,7 @@ beforeEach(async () => {
 
 describe("FoodProducts.service", () => {
   describe("create", () => {
-    it("should persist a food product with its computed carbon footprint", async () => {
+    it("should persist a food product with its total computed carbon footprint and ingrendient footprint", async () => {
       const foodProduct = await foodProductsService.create({
         name: "hamCheesePizza",
         ingredients: [
@@ -27,9 +27,13 @@ describe("FoodProducts.service", () => {
 
       expect(foodProduct.id).toBeDefined();
       expect(foodProduct.carbonFootprintInKgCO2e).toBe(0.4); // (2 * 0.1) + (1 * 0.2) = 0.4
+      expect(foodProduct.ingredients).toEqual([
+        { name: "ham", unit: "kg", quantity: 2, carbonFootprint: 0.2 },
+        { name: "cheese", unit: "kg", quantity: 1, carbonFootprint: 0.2 },
+      ]);
     });
 
-    it("should persist null foodprint when an ingredient has no matching factor", async () => {
+    it("should persist null total footprint when an ingredient has no matching factor and null ingredient footprint for that ingredient", async () => {
       const foodProduct = await foodProductsService.create({
         name: "unknownUnitPizza",
         ingredients: [
@@ -40,6 +44,7 @@ describe("FoodProducts.service", () => {
 
       expect(foodProduct.id).toBeDefined();
       expect(foodProduct.carbonFootprintInKgCO2e).toBeNull();
+      expect(foodProduct.ingredients[0].carbonFootprint).toBeNull();
     });
 
     it("should throw when trying to create a food product with duplicate name", async () => {
