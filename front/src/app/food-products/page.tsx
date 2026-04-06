@@ -4,6 +4,7 @@ import DataTable, { ColumnConfig } from "@/components/DataTable";
 import ErrorState from "@/components/ErrorState";
 import CreateFoodProductModal from "@/components/foodProduct/CreateFoodProductModal";
 import IngredientBreakdown from "@/components/foodProduct/IngredientBreakdown";
+import RecomputeButton from "@/components/foodProduct/RecomputeButton";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { CreateFoodProductDto, FoodProduct } from "@/types/food-product";
 import { useEffect, useState } from "react";
@@ -55,6 +56,28 @@ export default function FoodProductsPage() {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const handleRecomputeCarbonFootprint = async (id: number) => {
+    try {
+      const response = await fetch(
+        `${API_URL}/food-products/${id}/recompute-carbon-footprint`,
+        { method: "PATCH" },
+      );
+
+      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+
+      const updated: FoodProduct = await response.json();
+
+      setProducts((prev) =>
+        prev.map((product) => (product.id === id ? updated : product)),
+      );
+
+      if (selectedProduct?.id === id) setSelectedProduct(updated);
+    } catch (error) {
+      console.error("Error recomputing carbon footprint:", error);
+      alert("Failed to recompute carbon footprint.");
+    }
+  };
 
   const handleCreateProduct = async (formData: CreateFoodProductDto) => {
     try {
@@ -134,6 +157,11 @@ export default function FoodProductsPage() {
             onSort={() => {}}
             renderCell={renderCell}
             onRowClick={setSelectedProduct}
+            renderRowActions={(item) => (
+              <RecomputeButton
+                onClick={() => handleRecomputeCarbonFootprint(item.id)}
+              />
+            )}
           />
         </div>
 
