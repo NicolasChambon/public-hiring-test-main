@@ -23,6 +23,16 @@ export default function CreateFoodProductModal({
     { ...EMPTY_INGREDIENT },
   ]);
 
+  const resetForm = () => {
+    setName("");
+    setIngredients([{ ...EMPTY_INGREDIENT }]);
+  };
+
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
   const addIngredient = () =>
     setIngredients((prev) => [...prev, { ...EMPTY_INGREDIENT }]);
 
@@ -46,9 +56,13 @@ export default function CreateFoodProductModal({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await onSubmit({ name, ingredients });
-    setName("");
-    setIngredients([{ ...EMPTY_INGREDIENT }]);
+    try {
+      await onSubmit({ name, ingredients });
+      resetForm();
+    } catch {
+      // error handled by the caller
+      // keep form data intact
+    }
   };
 
   if (!isOpen) return null;
@@ -61,7 +75,7 @@ export default function CreateFoodProductModal({
             Calculate Carbon Footprint
           </h3>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-gray-400 hover:text-gray-600"
           >
             ✕
@@ -117,7 +131,7 @@ export default function CreateFoodProductModal({
                       updateIngredient(
                         index,
                         "quantity",
-                        parseFloat(e.target.value),
+                        parseFloat(e.target.value) || 0,
                       )
                     }
                     className="w-20 border-gray-300 rounded-md px-2 py-1 text-sm"
@@ -148,7 +162,7 @@ export default function CreateFoodProductModal({
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="px-4 py-2 text-sm text-gray-700 border rounded-md"
             >
               Cancel

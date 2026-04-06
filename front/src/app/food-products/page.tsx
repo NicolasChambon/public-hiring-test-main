@@ -73,8 +73,8 @@ export default function FoodProductsPage() {
       setShowForm(false);
     } catch (error) {
       console.error("Error creating food product:", error);
-
       alert("Failed to create food product.");
+      throw error;
     } finally {
       setCreating(false);
     }
