@@ -17,6 +17,7 @@ interface DataTableProps<T extends { id: number }> {
   onSort: (field: keyof T) => void;
   renderCell?: (item: T, column: ColumnConfig<T>) => ReactNode;
   onRowClick?: (item: T) => void;
+  renderRowActions?: (item: T) => ReactNode;
 }
 
 export default function DataTable<T extends { id: number }>({
@@ -27,6 +28,7 @@ export default function DataTable<T extends { id: number }>({
   onSort,
   renderCell,
   onRowClick,
+  renderRowActions,
 }: DataTableProps<T>) {
   const defaultRenderCell = (item: T, column: ColumnConfig<T>) =>
     String(item[column.key] ?? "");
@@ -68,6 +70,7 @@ export default function DataTable<T extends { id: number }>({
                 </div>
               </th>
             ))}
+            {renderRowActions && <th className="px-6 py-3" />}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -87,6 +90,14 @@ export default function DataTable<T extends { id: number }>({
                     : defaultRenderCell(item, column)}
                 </td>
               ))}
+              {renderRowActions && (
+                <td
+                  className="px-6 py-4 text-right"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {renderRowActions(item)}
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
