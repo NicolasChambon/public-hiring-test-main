@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import type { CreateFoodProductDto, IngredientDto } from "@/types/food-product";
 
 const EMPTY_INGREDIENT: IngredientDto = { name: "", quantity: 0, unit: "kg" };
@@ -18,6 +18,7 @@ export default function CreateFoodProductModal({
   onSubmit,
   isCreating,
 }: Props) {
+  const [name, setName] = useState("");
   const [ingredients, setIngredients] = useState<IngredientDto[]>([
     { ...EMPTY_INGREDIENT },
   ]);
@@ -25,25 +26,29 @@ export default function CreateFoodProductModal({
   const addIngredient = () =>
     setIngredients((prev) => [...prev, { ...EMPTY_INGREDIENT }]);
 
-  const removeIngredient = (index: number) =>
-    setIngredients((prev) => prev.filter((_, i) => i !== index));
+  const removeIngredient = (indexToRm: number) =>
+    setIngredients((prev) =>
+      prev.filter((_, filterIndex) => filterIndex !== indexToRm),
+    );
 
   const updateIngredient = (
-    index: number,
+    indexToUpdt: number,
     field: keyof IngredientDto,
     value: string | number,
   ) =>
     setIngredients((prev) =>
-      prev.map((ing, i) => (i === index ? { ...ing, [field]: value } : ing)),
+      prev.map((ingredient, mapIndex) =>
+        mapIndex === indexToUpdt
+          ? { ...ingredient, [field]: value }
+          : ingredient,
+      ),
     );
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const name = (
-      e.currentTarget.elements.namedItem("name") as HTMLInputElement
-    ).value;
     await onSubmit({ name, ingredients });
-    setIngredients([{ ...EMPTY_INGREDIENT }]); // reset
+    setName("");
+    setIngredients([{ ...EMPTY_INGREDIENT }]);
   };
 
   if (!isOpen) return null;
@@ -63,20 +68,19 @@ export default function CreateFoodProductModal({
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Product name */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Product name
             </label>
             <input
-              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm px-3 py-2"
               placeholder="e.g., Ham Cheese Pizza"
             />
           </div>
 
-          {/* Ingredients */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -91,12 +95,12 @@ export default function CreateFoodProductModal({
               </button>
             </div>
             <div className="space-y-2">
-              {ingredients.map((ing, index) => (
+              {ingredients.map((ingredient, index) => (
                 <div key={index} className="flex gap-2 items-center">
                   <input
                     required
                     placeholder="Name"
-                    value={ing.name}
+                    value={ingredient.name}
                     onChange={(e) =>
                       updateIngredient(index, "name", e.target.value)
                     }
@@ -106,9 +110,9 @@ export default function CreateFoodProductModal({
                     required
                     type="number"
                     min="0"
-                    step="0.001"
+                    step="0.01"
                     placeholder="Qty"
-                    value={ing.quantity || ""}
+                    value={ingredient.quantity || ""}
                     onChange={(e) =>
                       updateIngredient(
                         index,
@@ -121,7 +125,7 @@ export default function CreateFoodProductModal({
                   <input
                     required
                     placeholder="Unit"
-                    value={ing.unit}
+                    value={ingredient.unit}
                     onChange={(e) =>
                       updateIngredient(index, "unit", e.target.value)
                     }

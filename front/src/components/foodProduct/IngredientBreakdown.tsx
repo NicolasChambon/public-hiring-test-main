@@ -26,36 +26,36 @@ export default function IngredientBreakdown({
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {ingredients.map((ing) => (
+          {ingredients.map((ingredient) => (
             <tr
-              key={ing.name}
-              className={ing.carbonFootprint === null ? "bg-red-50" : ""}
+              key={ingredient.name}
+              className={ingredient.carbonFootprint === null ? "bg-red-50" : ""}
             >
-              <td className="py-1.5 font-medium">{ing.name}</td>
+              <td className="py-1.5 font-medium">{ingredient.name}</td>
               <td className="py-1.5 text-right text-gray-600">
-                {ing.quantity}
+                {ingredient.quantity}
               </td>
-              <td className="py-1.5 pl-2 text-gray-500">{ing.unit}</td>
+              <td className="py-1.5 pl-2 text-gray-500">{ingredient.unit}</td>
               <td className="py-1.5 text-right">
-                {ing.carbonFootprint == null ? (
+                {ingredient.carbonFootprint == null ? (
                   <span className="text-red-500 text-xs">No factor</span>
                 ) : (
-                  ing.carbonFootprint.toFixed(4)
+                  ingredient.carbonFootprint.toFixed(4)
                 )}
               </td>
               <td className="py-1.5 text-right">
-                {ing.carbonFootprint !== null && total > 0 ? (
+                {ingredient.carbonFootprint !== null && total > 0 ? (
                   <div className="flex items-center justify-end gap-1">
                     <div className="w-16 bg-gray-200 rounded-full h-1.5">
                       <div
                         className="bg-green-500 h-1.5 rounded-full"
                         style={{
-                          width: `${(ing.carbonFootprint / total) * 100}%`,
+                          width: `${(ingredient.carbonFootprint / total) * 100}%`,
                         }}
                       />
                     </div>
                     <span className="text-xs text-gray-500 w-8 text-right">
-                      {((ing.carbonFootprint / total) * 100).toFixed(0)}%
+                      {((ingredient.carbonFootprint / total) * 100).toFixed(0)}%
                     </span>
                   </div>
                 ) : null}
