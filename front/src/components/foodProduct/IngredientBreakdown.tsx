@@ -1,4 +1,5 @@
 import { Ingredient } from "@/types/food-product";
+import ProgressBar from "../ui/ProgressBar";
 
 export default function IngredientBreakdown({
   ingredients,
@@ -52,23 +53,10 @@ export default function IngredientBreakdown({
               <td className="py-1.5 text-right">
                 {ingredient.carbonFootprint !== null &&
                 totalCarbonFootprint > 0 ? (
-                  <div className="flex items-center justify-end gap-1">
-                    <div className="w-16 bg-gray-200 rounded-full h-1.5">
-                      <div
-                        className="bg-green-500 h-1.5 rounded-full"
-                        style={{
-                          width: `${(ingredient.carbonFootprint / totalCarbonFootprint) * 100}%`,
-                        }}
-                      />
-                    </div>
-                    <span className="text-xs text-gray-500 w-8 text-right">
-                      {(
-                        (ingredient.carbonFootprint / totalCarbonFootprint) *
-                        100
-                      ).toFixed(0)}
-                      %
-                    </span>
-                  </div>
+                  <ProgressBar
+                    amount={ingredient.carbonFootprint}
+                    total={totalCarbonFootprint}
+                  />
                 ) : null}
               </td>
             </tr>

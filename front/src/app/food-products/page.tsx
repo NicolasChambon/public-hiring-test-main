@@ -1,11 +1,11 @@
 "use client";
 
-import DataTable, { ColumnConfig } from "@/components/DataTable";
-import ErrorState from "@/components/ErrorState";
 import CreateFoodProductModal from "@/components/foodProduct/CreateFoodProductModal";
 import IngredientBreakdown from "@/components/foodProduct/IngredientBreakdown";
 import RecomputeButton from "@/components/foodProduct/RecomputeButton";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import DataTable, { ColumnConfig } from "@/components/ui/DataTable";
+import ErrorState from "@/components/ui/ErrorState";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { CreateFoodProductDto, FoodProduct } from "@/types/food-product";
 import { useEffect, useState } from "react";
 

@@ -1,9 +1,9 @@
 "use client";
 
 import CreateFactorModal from "@/components/carbonEmissionFactor/CreateFactorModal";
-import DataTable, { ColumnConfig } from "@/components/DataTable";
-import ErrorState from "@/components/ErrorState";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import DataTable, { ColumnConfig } from "@/components/ui/DataTable";
+import ErrorState from "@/components/ui/ErrorState";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { CarbonEmissionFactor } from "@/types/carbon-emission-factor";
 import { useEffect, useState } from "react";
 
